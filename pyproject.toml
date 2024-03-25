@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "bluesoft"
+version = "0.1.0"
+description = ""
+authors = ["Alberto Llanos <alberto.llanosco@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0.3"
+djangorestframework = "^3.15.1"
+babel = "^2.14.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
