@@ -1,0 +1,86 @@
+[
+{
+  "model": "app.clienttype",
+  "pk": 1,
+  "fields": {
+    "created_at": "2024-03-25T22:45:23.302Z",
+    "updated_at": "2024-03-25T22:45:23.302Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Natural",
+    "description": null
+  }
+},
+{
+  "model": "app.clienttype",
+  "pk": 2,
+  "fields": {
+    "created_at": "2024-03-25T22:45:30.503Z",
+    "updated_at": "2024-03-25T22:45:30.503Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Juridico",
+    "description": null
+  }
+},
+{
+  "model": "app.accounttype",
+  "pk": 1,
+  "fields": {
+    "created_at": "2024-03-25T22:44:56.409Z",
+    "updated_at": "2024-03-25T22:44:56.409Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Ahorros",
+    "description": null
+  }
+},
+{
+  "model": "app.accounttype",
+  "pk": 2,
+  "fields": {
+    "created_at": "2024-03-25T22:45:09.033Z",
+    "updated_at": "2024-03-25T22:45:09.033Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Corriente",
+    "description": null
+  }
+},
+{
+  "model": "app.transactiontype",
+  "pk": 1,
+  "fields": {
+    "created_at": "2024-03-25T22:45:45.717Z",
+    "updated_at": "2024-03-25T22:45:45.717Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Retiro",
+    "description": null
+  }
+},
+{
+  "model": "app.transactiontype",
+  "pk": 2,
+  "fields": {
+    "created_at": "2024-03-25T22:45:51.971Z",
+    "updated_at": "2024-03-25T22:45:51.971Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Transferencia",
+    "description": null
+  }
+},
+{
+  "model": "app.transactiontype",
+  "pk": 3,
+  "fields": {
+    "created_at": "2024-03-25T22:45:59.674Z",
+    "updated_at": "2024-03-25T22:45:59.674Z",
+    "deleted_at": null,
+    "is_active": true,
+    "name": "Consignación",
+    "description": null
+  }
+}
+]
