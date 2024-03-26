@@ -10,4 +10,6 @@ urlpatterns = [
     path('user_register/', views.UserRegisterView.as_view(), name='user_register'),
     #ACCOUNT BALANCE
     path('account_balance/', views.AccountBalanceView.as_view(), name='account_balance'),
+    #TRANSACTIONS
+    path('transaction/', views.TransactionsView.as_view(), name='transaction'),
 ]
