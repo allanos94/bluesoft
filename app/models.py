@@ -5,7 +5,7 @@ from app.utils.generics import GeneralModel
 
 from django.core.validators import MinValueValidator
 
-from app.utils.randoms import generate_account_number
+from app.utils.randoms import generate_account_number, generate_uuid
 
 GENDER_CHOICES = (
     ('M', 'Mujer'),
@@ -99,7 +99,7 @@ class AccountType(GeneralModel):
 class Transaction(GeneralModel):
     """ Transaction model for bank accounts """
     uuid = models.UUIDField()
-    account = models.ForeignKey('Account', on_delete=models.CASCADE)
+    origin = models.ForeignKey('Account', on_delete=models.CASCADE, related_name='origin_account', null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0.01)])
     transaction_type = models.ForeignKey('TransactionType', on_delete=models.CASCADE)
     description = models.CharField(max_length=50, null=True, blank=True)
@@ -113,6 +113,11 @@ class Transaction(GeneralModel):
         
     def __str__(self):
         return f"{self.uuid}"
+    
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            self.uuid = generate_uuid()
+        super(Transaction, self).save(*args, **kwargs)
 
 
 class TransactionType(GeneralModel):
