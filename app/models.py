@@ -5,6 +5,8 @@ from app.utils.generics import GeneralModel
 
 from django.core.validators import MinValueValidator
 
+from app.utils.randoms import generate_account_number
+
 GENDER_CHOICES = (
     ('M', 'Mujer'),
     ('H', 'Hombre'),
@@ -17,11 +19,9 @@ class Client(GeneralModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     # Account relationship
-    accounts = models.ManyToManyField('Account', related_name='clients')
+    accounts = models.ManyToManyField('Account', related_name='clients', blank=True)
 
     # Personal information
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
     
@@ -32,7 +32,7 @@ class Client(GeneralModel):
     address = models.TextField()
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.user.first_name} {self.user.last_name}"
     
     class Meta:
         """ Meta class for the Client model """
@@ -45,6 +45,9 @@ class ClientType(GeneralModel):
     """ Client type model for bank accounts """
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50, null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.name}"
     
 
     class Meta:
@@ -64,12 +67,23 @@ class Account(GeneralModel):
         verbose_name = 'Account'
         verbose_name_plural = 'Accounts'
         db_table = 'accounts'
+    
+    def __str__(self):
+        return f"{self.number}"
+    
+    def save(self, *args, **kwargs):
+        if not self.number:
+            self.number = generate_account_number()
+        super(Account, self).save(*args, **kwargs)
 
 
 class AccountType(GeneralModel):
     """ Account type model for bank accounts """
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50, null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.name}"
     
     class Meta:
         """" Meta class for the AccountType model """
@@ -96,6 +110,9 @@ class Transaction(GeneralModel):
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
         db_table = 'transactions'
+        
+    def __str__(self):
+        return f"{self.uuid}"
 
 
 class TransactionType(GeneralModel):
@@ -108,3 +125,6 @@ class TransactionType(GeneralModel):
         verbose_name = 'Transaction Type'
         verbose_name_plural = 'Transaction Types'
         db_table = 'transaction_types'
+    
+    def __str__(self):
+        return f"{self.name}"
