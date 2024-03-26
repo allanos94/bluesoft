@@ -4,7 +4,7 @@ from django.db import transaction
 from babel.numbers import format_currency
 
 
-from app.models import GENDER_CHOICES, Account, Client
+from app.models import GENDER_CHOICES, Account, Client, Transaction, TransactionType
 
 class UserRegisterSerializer(serializers.Serializer):
     """ This class is used to serialize the user registration data """
@@ -95,3 +95,63 @@ class AccountBalanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = ['number', 'balance']
+        
+class ReadTransactionSerializer(serializers.ModelSerializer):
+    """ This class is used to serialize the read transaction data """
+    amount = serializers.SerializerMethodField()
+    transaction_type = serializers.CharField()
+    target = serializers.CharField()
+    description = serializers.CharField()
+    
+    def get_amount(self, obj):
+        return format_currency(obj.amount, 'COP', locale='es_CO')
+    
+    class Meta:
+        model = Transaction
+        fields = '__all__'
+
+
+class WriteTransactionSerializer(serializers.Serializer):
+    """ This class is used to serialize the write transaction data """
+    origin = serializers.CharField(required=False)
+    amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = serializers.CharField()
+    target = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
+    
+    def validate(self, attrs):
+        transactions_choices = TransactionType.objects.values_list('name', flat=True)
+        transaction_type = attrs.get('transaction_type')
+        if transaction_type not in transactions_choices:
+            raise serializers.ValidationError("Invalid transaction type")
+        if transaction_type in ['Transferencia', 'Consignación'] and not attrs.get('target'):
+            raise serializers.ValidationError("Target account is required for transfer or deposit transactions")
+        if transaction_type == 'Retiro' and not attrs.get('origin'):
+            raise serializers.ValidationError("Origin account is required for withdrawal transactions")                
+        return attrs
+
+    def create(self, validated_data):
+        with transaction.atomic():
+            transaction_type = TransactionType.objects.get(name=validated_data.get('transaction_type'))   
+            origin = Account.objects.filter(number=validated_data.get('origin')).first()
+            target = Account.objects.filter(number=validated_data.get('target')).first()
+            amount = validated_data.get('amount')
+            if transaction_type.name == 'Transferencia':
+                if origin.balance < amount:
+                    raise serializers.ValidationError({"error": "Origin account does not have enough balance"})
+                origin.balance -= amount
+                target.balance += amount
+            elif transaction_type.name == 'Consignación':
+                target.balance += amount
+            elif transaction_type.name == 'Retiro':
+                if origin.balance < amount:
+                    raise serializers.ValidationError({"error": "Origin account does not have enough balance"})
+                origin.balance -= amount
+            origin.save() if origin else None
+            target.save() if target else None
+            validated_data['origin'] = origin
+            validated_data['target'] = target
+            validated_data['amount'] = amount
+            validated_data['transaction_type'] = transaction_type
+            create_transaction = Transaction.objects.create(**validated_data)
+            return create_transaction
