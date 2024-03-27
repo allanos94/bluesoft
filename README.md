@@ -25,44 +25,44 @@ Clientes que retiran dinero fuera de la ciudad de origen de la cuenta con el val
 
 1. Clonar el repositorio en su máquina local.
 
-´´´	
+```shell
 git clone git@github.com:allanos94/bluesoft.git
-´´´
+```
 
 2. Ingresar a la carpeta del proyecto.
 
-´´´
+```shell
 cd bluesoft
-´´´
+```
 
 3. Instalar poetry que es el manejador de dependencias de python.
 
-´´´
+```shell
 pip install poetry
-´´´
+```
 
 4. Ahora solo es instalar todas las dependencias con el siguiente comando de poetry:
 
-´´´	
+```shell	
 poetry install
-´´´
+```
 
 5. Luego debe instalar los fixtures necesarios para correr la app:
 
-´´´
+```shell
 ./manage.py loaddata fixtures/data.json
-´´´
+```
 
 6. Ya puede correr la aplicación con el debug de vscode o con el siguiente comando:
 
-´´´
+```shell
 ./manage.py runserver
-´´´
+```
 
 7. Para poder usar la app, debe crear un superuser o registrar un usuario en la app.
 
-´´´
+```shell
 ./manage.py createsuperuser
-´´´
+```
 
 8. Todos los EP están documentados en postman y compartiré ese repo via correo electrónico.
